@@ -1,7 +1,7 @@
 import subprocess
 import dnf
 import yaml
-import hashlib
+import shutil
 from dnf.plugin import Plugin
 from os.path import exists
 
@@ -63,14 +63,7 @@ class BootcPlugin(Plugin):
             with open(containerfile, 'w') as f:
                 f.write(new_containerfile_contents)
 
-            # Calculate and write the SHA256 checksum
-            sha256sum = hashlib.sha256()
-            with open(containerfile, 'rb') as f:
-                for chunk in iter(lambda: f.read(4096), b""):
-                    sha256sum.update(chunk)
-
-            with open('/var/Containerfile.sha256sum', 'w') as f:
-                f.write(sha256sum.hexdigest())
+            shutil.copy("/var/Containerfile", "/var/.Containerfile")
 
             print("Building bootc container")
             subprocess.run(['podman', 'build', '-t', 'os', '/var'], check=True)

@@ -3,12 +3,12 @@
 set -eu -o pipefail
 
 if [ -e "/var/Containerfile" ]; then
-   if [ ! -e "/var/Containerfile.sha256sum" ]; then
+   if [ ! -e "/var/.Containerfile" ]; then
      echo "Local modifications detected to os Containerfile"
      exit 1
    fi
 
-   if [ "$(< /var/Containerfile.sha256sum)" != "$(sha256sum /var/Containerfile | cut -d ' ' -f 1)" ]; then
+   if cmp -s /var/Containerfile /var/.Containerfile; then
      echo "Local modifications detected to os Containerfile, checksum doesn't match"
      exit 2
    fi
