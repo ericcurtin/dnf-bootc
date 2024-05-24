@@ -8,7 +8,7 @@ if [ -e "/var/Containerfile" ]; then
      exit 1
    fi
 
-   if [ "$(< /var/Containerfile.sha256sum)" != "$(sha256sum /var/Containerfile)"]; then
+   if [ "$(< /var/Containerfile.sha256sum)" != "$(sha256sum /var/Containerfile | cut -d ' ' -f 1)" ]; then
      echo "Local modifications detected to os Containerfile, checksum doesn't match"
      exit 2
    fi
