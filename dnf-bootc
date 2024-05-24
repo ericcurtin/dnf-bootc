@@ -8,7 +8,7 @@ if [ -e "/var/Containerfile" ]; then
      exit 1
    fi
 
-   if cmp -s /var/Containerfile /var/.Containerfile; then
+   if ! cmp -s /var/Containerfile /var/.Containerfile; then
      echo "Local modifications detected to os Containerfile, changes made outside dnf-bootc"
      exit 2
    fi
