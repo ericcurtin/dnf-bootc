@@ -74,5 +74,5 @@ class BootcPlugin(Plugin):
 
             print("Building bootc container")
             subprocess.run(['podman', 'build', '-t', 'os', '/var'], check=True)
-            subprocess.run(['bootc', 'switch', '--transport', 'containers-storage', 'localhost/os'], check=True)
+            subprocess.run(['bootc', 'switch', '--transport', 'containers-storage', 'localhost/os:latest'], check=True)
 
