@@ -1,6 +1,7 @@
 import subprocess
 import dnf
 import yaml
+import hashlib
 from dnf.plugin import Plugin
 from os.path import exists
 
@@ -27,20 +28,40 @@ class BootcPlugin(Plugin):
 
         if actions:
             containerfile = '/var/Containerfile'
-            containerfile_contents = ''
-            if not exists(containerfile):
-                data = subprocess.run(["bootc", "status"], capture_output=True, text=True, check=True)
-                data = yaml.safe_load(data.stdout)
+            new_containerfile_contents = ''
+            from_line = ''
 
-                # Extract the desired image value
-                image = data['spec']['image']['image']
-                containerfile_contents = f"FROM {image}\n"
+            data = subprocess.run(["bootc", "status"], capture_output=True, text=True, check=True)
+            data = yaml.safe_load(data.stdout)
+
+            # Extract the desired image value
+            image = data['spec']['image']['image']
+            from_line = f"FROM {image}\n"
+
+            if exists(containerfile):
+                with open(containerfile, 'r') as f:
+                    lines = f.readlines()
+
+                # Replace the FROM line if it exists
+                replaced = False
+                for line in lines:
+                    if line.startswith("FROM "):
+                        new_containerfile_contents += from_line
+                        replaced = True
+                    else:
+                        new_containerfile_contents += line
+
+                # If there was no FROM line, add it at the top
+                if not replaced:
+                    new_containerfile_contents = from_line + new_containerfile_contents
+            else:
+                new_containerfile_contents = from_line
 
             for action in actions:
-                containerfile_contents += f"{action}\n"
+                new_containerfile_contents += f"{action}\n"
 
-            with open(containerfile, 'a') as f:
-                f.write(containerfile_contents)
+            with open(containerfile, 'w') as f:
+                f.write(new_containerfile_contents)
 
             # Calculate and write the SHA256 checksum
             sha256sum = hashlib.sha256()
