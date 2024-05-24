@@ -2,7 +2,7 @@
 
 The goal is to make an image-based OS, feel like a package-based OS.
 
-UNTESTED, just a concept right now, the goal is so dnf-bootc behaves exactly like dnf to the end user.
+UNTESTED, just a concept right now, the goal is so dnf-bootc behaves like dnf on a package based system to the end user.
 
 This project provides a `dnf` plugin and a wrapper script `dnf-bootc` that automatically appends `dnf install` commands to a `Containerfile` and rebuilds the container using `podman build` after each successful installation.
 
