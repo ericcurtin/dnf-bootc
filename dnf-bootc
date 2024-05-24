@@ -9,7 +9,7 @@ if [ -e "/var/Containerfile" ]; then
    fi
 
    if cmp -s /var/Containerfile /var/.Containerfile; then
-     echo "Local modifications detected to os Containerfile, checksum doesn't match"
+     echo "Local modifications detected to os Containerfile, changes made outside dnf-bootc"
      exit 2
    fi
 fi
