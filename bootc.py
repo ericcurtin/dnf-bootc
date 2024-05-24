@@ -26,9 +26,9 @@ class BootcPlugin(Plugin):
             actions.append(f"RUN dnf remove -y {' '.join(self.pkgs_remove)}")
 
         if actions:
-            containerfile_dir = '/var/Containerfile'
+            containerfile = '/var/Containerfile'
             containerfile_contents = ''
-            if not exists(containerfile_dir):
+            if not exists(containerfile):
                 data = subprocess.run(["bootc", "status"], capture_output=True, text=True, check=True)
                 data = yaml.safe_load(data.stdout)
 
@@ -37,8 +37,17 @@ class BootcPlugin(Plugin):
                 containerfile_contents = f"FROM {image}\n"
 
             containerfile_contents = f"{containerfile_contents}\n".join(actions) + '\n'
-            with open(containerfile_dir, 'a') as f:
+            with open(containerfile, 'a') as f:
                 f.write(containerfile_contents)
+
+            # Calculate and write the SHA256 checksum
+            sha256sum = hashlib.sha256()
+            with open(containerfile, 'rb') as f:
+                for chunk in iter(lambda: f.read(4096), b""):
+                    sha256sum.update(chunk)
+
+            with open('/var/Containerfile.sha256sum', 'w') as f:
+                f.write(sha256sum.hexdigest())
 
             print("Building bootc container")
             subprocess.run(['podman', 'build', '-t', 'os', '/var'], check=True)

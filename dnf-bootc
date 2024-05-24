@@ -2,6 +2,18 @@
 
 set -eu -o pipefail
 
+if [ -e "/var/Containerfile" ]; then
+   if [ ! -e "/var/Containerfile.sha256sum" ]; then
+     echo "Local modifications detected to os Containerfile"
+     exit 1
+   fi
+
+   if [ "$(< /var/Containerfile.sha256sum)" != "$(sha256sum /var/Containerfile)"]; then
+     echo "Local modifications detected to os Containerfile, checksum doesn't match"
+     exit 2
+   fi
+fi
+
 bootc usr-overlay || true
 exec dnf --setopt=pluginpath=/var/dnf-plugins/ $*
 
