@@ -35,6 +35,7 @@ class BootcPlugin(Plugin):
             with open(containerfile_dir, 'a') as f:
                 f.write(containerfile_contents)
 
-            print("Rebuilding bootc container")
+            print("Building bootc container")
             subprocess.run(['podman', 'build', '-t', 'os', '/var'], check=True)
+            subprocess.run(['bootc', 'switch', '--transport', 'containers-storage', 'localhost/os'], check=True)
 
