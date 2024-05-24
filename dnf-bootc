@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -eu -o pipefail
+
+bootc usr-overlay || true
+exec dnf --setopt=pluginpath=/var/dnf-plugins/ $*
+
