@@ -14,6 +14,9 @@ if [ -e "/var/Containerfile" ]; then
    fi
 fi
 
-bootc usr-overlay || true
+if ! mount | grep -q "overlay on /usr type"; then
+  bootc usr-overlay
+fi
+
 exec dnf --setopt=pluginpath=/var/dnf-plugins/ $*
 
