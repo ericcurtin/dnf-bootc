@@ -36,7 +36,9 @@ class BootcPlugin(Plugin):
                 image = data['spec']['image']['image']
                 containerfile_contents = f"FROM {image}\n"
 
-            containerfile_contents = f"{containerfile_contents}\n".join(actions) + '\n'
+            for action in actions:
+                containerfile_contents += f"{action}\n"
+
             with open(containerfile, 'a') as f:
                 f.write(containerfile_contents)
 
