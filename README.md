@@ -2,15 +2,13 @@
 
 The goal is to make an image-based OS, feel like a package-based OS.
 
-UNTESTED, just a concept right now, the goal is so dnf-bootc behaves like dnf on a package based system to the end user.
-
-This project provides a `dnf` plugin and a wrapper script `dnf-bootc` that automatically appends `dnf install` commands to a `Containerfile` and rebuilds the container using `podman build` after each successful installation.
+`/var/dnf-bootc` commands are applied live and persist after reboot.
 
 ## Features
 
-- Automatically appends installed packages to `/var/Containerfile`.
-- Rebuilds using `podman build` after each installation of a package.
-- Only triggers when using `dnf-bootc` command, not when using `dnf` command.
+- Automatically appends packages to `/var/Containerfile`.
+- Rebuilds using `podman build` after each modification of a package.
+- Only triggers when using `/var/dnf-bootc` command, not when using `dnf` command.
 
 ## Installation
 
@@ -20,9 +18,11 @@ curl -fsSL https://raw.githubusercontent.com/ericcurtin/dnf-bootc/main/install.s
 
 ## Usage
 
-`dnf-bootc` uses the same syntax as `dnf`:
+Because we are not packaged properly yet, we have to call as `/var/dnf-bootc`
+
+`/var/dnf-bootc` uses the same syntax as `dnf`:
 
 ```bash
-sudo dnf-bootc install <package_name>
+sudo /var/dnf-bootc install <package_name>
 ```
 
