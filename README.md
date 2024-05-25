@@ -4,6 +4,12 @@ The goal is to make an image-based OS, feel like a package-based OS.
 
 `/var/dnf-bootc` commands are applied live and persist after reboot.
 
+## Installation
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ericcurtin/dnf-bootc/main/install.sh | sudo bash
+```
+
 ## Features
 
 - Automatically appends install/remove packages transactions to `/var/Containerfile`.
@@ -32,12 +38,6 @@ Followed by:
 
 ```bash
 sudo dnf-bootc config-manager --add-repo repository
-```
-
-## Installation
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/ericcurtin/dnf-bootc/main/install.sh | sudo bash
 ```
 
 ## Usage
