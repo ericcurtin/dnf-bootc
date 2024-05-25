@@ -7,7 +7,7 @@ The goal is to make an image-based OS, feel like a package-based OS.
 ## Installation
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ericcurtin/dnf-bootc/main/install.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/ericcurtin/dnf-bootc/s/install.sh | sudo bash
 ```
 
 ## Features
