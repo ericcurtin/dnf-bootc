@@ -2,16 +2,21 @@
 
 set -eu -o pipefail
 
-if [ -e "/var/Containerfile" ]; then
-   if [ ! -e "/var/.Containerfile" ]; then
-     echo "Local modifications detected to os Containerfile"
-     exit 1
-   fi
+if [ "$EUID" -ne 0 ]; then
+  echo "Error: This command has to be run with superuser privileges (under the root user on most systems)." >&2
+  exit 1
+fi
 
-   if ! cmp -s /var/Containerfile /var/.Containerfile; then
-     echo "Local modifications detected to os Containerfile, changes made outside dnf-bootc"
-     exit 2
-   fi
+if [ -e "/var/Containerfile" ]; then
+  if [ ! -e "/var/.Containerfile" ]; then
+    echo "Local modifications detected to os Containerfile"
+    exit 1
+  fi
+
+  if ! cmp -s /var/Containerfile /var/.Containerfile; then
+    echo "Local modifications detected to os Containerfile, changes made outside dnf-bootc"
+    exit 2
+  fi
 fi
 
 if ! mount | grep -q "overlay on /usr type"; then
