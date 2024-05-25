@@ -1,4 +1,4 @@
-# DNF Bootc Plugin
+# dnf-bootc
 
 The goal is to make an image-based OS, feel like a package-based OS.
 
