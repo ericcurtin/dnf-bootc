@@ -9,12 +9,12 @@ fi
 
 if [ -e "/var/Containerfile" ]; then
   if [ ! -e "/var/.Containerfile" ]; then
-    echo "Local modifications detected to os Containerfile" >&2
+    echo "Error: Local modifications detected to os Containerfile" >&2
     exit 2
   fi
 
   if ! cmp -s /var/Containerfile /var/.Containerfile; then
-    echo "Local modifications detected to os Containerfile, changes made outside dnf-bootc" >&2
+    echo "Error: Local modifications detected to os Containerfile, changes made outside dnf-bootc" >&2
     exit 3
   fi
 fi
