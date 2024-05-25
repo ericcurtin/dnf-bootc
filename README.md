@@ -10,6 +10,16 @@ The goal is to make an image-based OS, feel like a package-based OS.
 curl -fsSL https://raw.githubusercontent.com/ericcurtin/dnf-bootc/s/install.sh | sudo bash
 ```
 
+## Usage
+
+Because we are not packaged properly yet, we have to call as `/var/dnf-bootc`.
+
+`/var/dnf-bootc` uses the same syntax as `dnf`:
+
+```bash
+sudo /var/dnf-bootc install <package_name>
+```
+
 ## Features
 
 - Automatically appends install/remove packages transactions to `/var/Containerfile`.
@@ -38,15 +48,5 @@ Followed by:
 
 ```bash
 sudo dnf-bootc config-manager --add-repo repository
-```
-
-## Usage
-
-Because we are not packaged properly yet, we have to call as `/var/dnf-bootc`.
-
-`/var/dnf-bootc` uses the same syntax as `dnf`:
-
-```bash
-sudo /var/dnf-bootc install <package_name>
 ```
 
