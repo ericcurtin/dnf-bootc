@@ -12,7 +12,7 @@ The goal is to make an image-based OS, feel like a package-based OS.
 
 ## Features not available
 
-Only installs and removes are available. Other features should be run and appended to `/var/Containerfile` manually. `/var/Containerfile` relies on keeping the state in sync with the local system, by appending a `RUN ` command to a previous known state in the `/var/Containerfile`.
+Only installs and removes are available. Other features should be run and appended to `/var/Containerfile` manually. `/var/Containerfile` relies on keeping the state in sync with the local system, by appending a `RUN ` command to a previously known state in the `/var/Containerfile`.
 
 An example of a feature that `/var/dnf-bootc` doesn't automatically account for would be, adding a third party repo. To do this, we may add lines to `/var/Containerfile` like this:
 
