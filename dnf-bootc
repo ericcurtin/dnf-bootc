@@ -12,7 +12,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 if [ -e "/var/Containerfile" ] && ! cmp -s /var/Containerfile /var/.Containerfile; then
-  err "Local modifications detected to os Containerfile"
+  err "Local modifications to os Containerfile detected"
   exit 2
 fi
 
