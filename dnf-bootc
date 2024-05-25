@@ -12,7 +12,16 @@ if [ -e "/var/Containerfile" ] && ! cmp -s /var/Containerfile /var/.Containerfil
   exit 2
 fi
 
-if ! grep -q "overlay /usr overlay" /proc/mounts; then
+run_bootc_usr_overlay="true"
+# Read and parse /proc/mounts
+while read -r device mountpoint fstype options dump pass; do
+  if [ "$device" = "overlay" ] && [ "$mountpoint" = "/usr" ]; then
+    run_bootc_usr_overlay="false"
+    break
+  fi
+done < /proc/mounts
+
+if $run_bootc_usr_overlay; then
   bootc usr-overlay
 fi
 
