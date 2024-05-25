@@ -19,7 +19,7 @@ if [ -e "/var/Containerfile" ]; then
   fi
 fi
 
-if ! mount | grep -q "overlay on /usr type"; then
+if ! grep -q "overlay /usr overlay" /proc/mounts; then
   bootc usr-overlay
 fi
 
