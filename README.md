@@ -16,9 +16,9 @@ curl -fsSL https://raw.githubusercontent.com/ericcurtin/dnf-bootc/main/install.s
 - Rebuilds using `podman build` after each transaction.
 - Only triggers when using `/var/dnf-bootc` command, not when using `dnf` command.
 
-## Features not available
+## Features not automatically appended to os Containerfile
 
-Only installs and removes are available. Other features should be run and appended to `/var/Containerfile` manually. `/var/Containerfile` relies on keeping the state in sync with the local system, by appending a `RUN ` command to a previously known state in the `/var/Containerfile`.
+Only installs and removes are automatically appended. Other features should be run and appended to `/var/Containerfile` manually. `/var/Containerfile` relies on keeping the state in sync with the local system, by appending a `RUN ` command to a previously known state in the `/var/Containerfile`.
 
 An example of a feature that `/var/dnf-bootc` doesn't automatically account for would be, adding a third party repo. To do this, we may add lines to `/var/Containerfile` like this:
 
