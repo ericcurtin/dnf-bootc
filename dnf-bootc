@@ -2,13 +2,17 @@
 
 set -eu -o pipefail
 
+err() {
+  echo "Error: $1" >&2
+}
+
 if [ "$EUID" -ne 0 ]; then
-  echo "Error: This command has to be run with superuser privileges (under the root user on most systems)." >&2
+  err "This command has to be run with superuser privileges (under the root user on most systems)."
   exit 1
 fi
 
 if [ -e "/var/Containerfile" ] && ! cmp -s /var/Containerfile /var/.Containerfile; then
-  echo "Error: Local modifications detected to os Containerfile" >&2
+  err "Local modifications detected to os Containerfile"
   exit 2
 fi
 
