@@ -19,7 +19,6 @@ class BootcPlugin(Plugin):
         self.pkgs_install = [pkg.name for pkg in self.base.transaction.install_set]
         self.pkgs_remove = [pkg.name for pkg in self.base.transaction.remove_set]
 
-
     def transaction(self):
         actions = self.generate_actions()
         if actions:
