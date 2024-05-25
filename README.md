@@ -6,8 +6,8 @@ The goal is to make an image-based OS, feel like a package-based OS.
 
 ## Features
 
-- Automatically appends packages transactions to `/var/Containerfile`.
-- Rebuilds using `podman build` after each modification of a package.
+- Automatically appends install/remove packages transactions to `/var/Containerfile`.
+- Rebuilds using `podman build` after each transaction.
 - Only triggers when using `/var/dnf-bootc` command, not when using `dnf` command.
 
 ## Features not available
