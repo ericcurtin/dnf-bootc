@@ -7,11 +7,9 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
-if [ -e "/var/Containerfile" ]; then
-  if ! cmp -s /var/Containerfile /var/.Containerfile; then
-    echo "Error: Local modifications detected to os Containerfile" >&2
-    exit 2
-  fi
+if [ -e "/var/Containerfile" ] && ! cmp -s /var/Containerfile /var/.Containerfile; then
+  echo "Error: Local modifications detected to os Containerfile" >&2
+  exit 2
 fi
 
 if ! grep -q "overlay /usr overlay" /proc/mounts; then
