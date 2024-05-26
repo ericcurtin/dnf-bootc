@@ -32,5 +32,6 @@ fi
 dnf --setopt=pluginpath=/var/dnf-plugins/ $*
 cp "/var/Containerfile" "/var/.Containerfile"
 podman build -t os /var
-exec bootc switch --transport containers-storage $(podman images -q localhost/os:latest)
+PODMAN_IMAGE_ID="$(podman images -q localhost/os:latest)"
+exec bootc switch --transport containers-storage "$PODMAN_IMAGE_ID"
 
