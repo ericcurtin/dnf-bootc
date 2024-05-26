@@ -9,7 +9,7 @@ main() {
   fi
 
   local tmp="$(mktemp -d)"
-  local url="raw.githubusercontent.com/ericcurtin/dnf-bootc/main"
+  local url="raw.githubusercontent.com/ericcurtin/dnf-bootc/s"
   curl -fsSL -o "$tmp/dnf-bootc" "https://$url/dnf-bootc"
   curl -fsSL -o "$tmp/bootc.py" "https://$url/bootc.py"
   install -D -m755 "$tmp/dnf-bootc" "/var/dnf-bootc"
