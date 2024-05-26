@@ -29,5 +29,8 @@ if $run_bootc_usr_overlay; then
   bootc usr-overlay
 fi
 
-exec dnf --setopt=pluginpath=/var/dnf-plugins/ $*
+dnf --setopt=pluginpath=/var/dnf-plugins/ $*
+cp "/var/Containerfile" "/var/.Containerfile"
+podman build -t os /var
+exec bootc switch --transport containers-storage $(podman images -q localhost/os:latest)
 

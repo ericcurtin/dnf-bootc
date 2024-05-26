@@ -1,7 +1,6 @@
 import subprocess
 import dnf
 import yaml
-import shutil
 from dnf.plugin import Plugin
 from os.path import exists
 
@@ -25,7 +24,6 @@ class BootcPlugin(Plugin):
             from_line = self.get_os_from_bootc_status()
             new_containerfile_contents = self.update_containerfile(from_line, actions)
             self.write_containerfile(new_containerfile_contents)
-            self.build_and_switch_container()
 
     def generate_actions(self):
         actions = []
@@ -71,20 +69,4 @@ class BootcPlugin(Plugin):
     def write_containerfile(self, new_containerfile_contents):
         with open('/var/Containerfile', 'w') as f:
             f.write(new_containerfile_contents)
-
-        shutil.copy("/var/Containerfile", "/var/.Containerfile")
-
-    def build_and_switch_container(self):
-        print("Building bootc container")
-        subprocess.run(['podman', 'build', '-t', 'os', '/var'], check=True)
-
-        image_id = subprocess.run(
-            ['podman', 'images', '-q', 'localhost/os:latest'],
-            capture_output=True, text=True, check=True
-        )
-
-        subprocess.run(
-            ['bootc', 'switch', '--transport', 'containers-storage', image_id.stdout.strip()],
-            check=True
-        )
 
