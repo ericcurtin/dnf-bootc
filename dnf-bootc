@@ -1,10 +1,30 @@
 #!/bin/bash
 
-set -eu -o pipefail
-
 err() {
   echo "Error: $1" >&2
 }
+
+run-bootc-usr-overlay() {
+  local run_bootc_usr_overlay="true"
+  # Read and parse /proc/mounts
+  while read -r device mountpoint fstype options dump pass; do
+    if [ "$device" = "overlay" ] && [ "$mountpoint" = "/usr" ]; then
+      run_bootc_usr_overlay="false"
+      break
+    fi
+  done < /proc/mounts
+
+  if $run_bootc_usr_overlay; then
+    bootc usr-overlay
+  fi
+}
+
+bootc-switch() {
+  local podman_image_id="$(podman images -q os)"
+  exec bootc switch --transport containers-storage "$podman_image_id"
+}
+
+set -eu -o pipefail
 
 if [ "$EUID" -ne 0 ]; then
   err "This command has to be run with superuser privileges (under the root user on most systems)."
@@ -16,22 +36,9 @@ if [ -e "/var/Containerfile" ] && ! cmp -s /var/Containerfile /var/.Containerfil
   exit 2
 fi
 
-run_bootc_usr_overlay="true"
-# Read and parse /proc/mounts
-while read -r device mountpoint fstype options dump pass; do
-  if [ "$device" = "overlay" ] && [ "$mountpoint" = "/usr" ]; then
-    run_bootc_usr_overlay="false"
-    break
-  fi
-done < /proc/mounts
-
-if $run_bootc_usr_overlay; then
-  bootc usr-overlay
-fi
-
+run-bootc-usr-overlay
 dnf --setopt=pluginpath=/var/dnf-plugins/ $*
 cp "/var/Containerfile" "/var/.Containerfile"
 podman build -t os /var
-PODMAN_IMAGE_ID="$(podman images -q localhost/os:latest)"
-exec bootc switch --transport containers-storage "$PODMAN_IMAGE_ID"
+bootc-switch
 
