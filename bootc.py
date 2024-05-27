@@ -28,7 +28,7 @@ class BootcPlugin(Plugin):
     def generate_actions(self):
         actions = []
         if self.pkgs_install:
-            actions.append("COPY ../var/cache/dnf /var/cache/dnf")
+            actions.append("COPY cache/dnf /var/cache/dnf")
             actions.append(f"RUN dnf install -y {' '.join(self.pkgs_install)}")
 
         if self.pkgs_remove:
