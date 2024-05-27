@@ -1,0 +1,18 @@
+#!/bin/bash
+
+bootc-switch() {
+  local podman_image_id="$(podman images -q os)"
+  exec bootc switch --transport containers-storage "$podman_image_id"
+}
+
+set -eu -o pipefail
+
+if [ "$EUID" -ne 0 ]; then
+  err "This command has to be run with superuser privileges (under the root user on most systems)."
+  exit 1
+fi
+
+cp "/var/Containerfile" "/var/.Containerfile"
+podman build -t os /var
+bootc-switch
+

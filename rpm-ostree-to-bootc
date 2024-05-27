@@ -31,7 +31,6 @@ if [ -e "/var/Containerfile" ] && ! cmp -s /var/Containerfile /var/.Containerfil
   exit 2
 fi
 
-run-bootc-usr-overlay
-dnf --setopt=pluginpath=/var/dnf-plugins/ $*
+/var/rpm-ostree-to-bootc.py $*
 exec /var/bootc-build-switch
 

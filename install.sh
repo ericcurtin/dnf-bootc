@@ -1,5 +1,9 @@
 #!/bin/bash
 
+install_755() {
+  install -D -m755 "$1" "$2"
+}
+
 main() {
   set -eu -o pipefail
 
@@ -9,11 +13,17 @@ main() {
   fi
 
   local tmp="$(mktemp -d)"
-  local url="raw.githubusercontent.com/ericcurtin/dnf-bootc/s"
-  curl -fsSL -o "$tmp/dnf-bootc" "https://$url/dnf-bootc"
-  curl -fsSL -o "$tmp/bootc.py" "https://$url/bootc.py"
-  install -D -m755 "$tmp/dnf-bootc" "/var/dnf-bootc"
-  install -D -m755 "$tmp/bootc.py" "/var/dnf-plugins/bootc.py"
+  local url="https://raw.githubusercontent.com/ericcurtin/dnf-bootc/s"
+  curl -fsSL -o "$tmp/dnf-bootc" "$url/dnf-bootc"
+  curl -fsSL -o "$tmp/bootc-build-switch" "$url/bootc-build-switch"
+  curl -fsSL -o "$tmp/rpm-ostree-to-bootc" "$url/rpm-ostree-to-bootc"
+  curl -fsSL -o "$tmp/rpm-ostree-to-bootc.py" "$url/rpm-ostree-to-bootc.py"
+  curl -fsSL -o "$tmp/bootc.py" "$url/bootc.py"
+  install_755 "$tmp/dnf-bootc" "/var/dnf-bootc"
+  install_755 "$tmp/bootc-build-switch" "/var/bootc-build-switch"
+  install_755 "$tmp/rpm-ostree-to-bootc" "/var/rpm-ostree-to-bootc"
+  install_755 "$tmp/rpm-ostree-to-bootc.py" "/var/rpm-ostree-to-bootc.py"
+  install_755 "$tmp/bootc.py" "/var/dnf-plugins/bootc.py"
   echo "Complete!"
   rm -rf $tmp &
 }
