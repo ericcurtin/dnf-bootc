@@ -42,10 +42,7 @@ def generate_containerfile(req_pkgs, req_local_pkgs, installed_pkgs):
     # Abbreviate package names
     pkgs = []
     for pkg in req_pkgs + req_local_pkgs:
-        print(pkg)
         for installed_pkg in installed_pkgs:
-            print(installed_pkg)
-            print(pkg)
             if pkg.startswith(installed_pkg + "-") or pkg == installed_pkg:
                 pkgs.append(installed_pkg)
                 break
