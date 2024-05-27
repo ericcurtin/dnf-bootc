@@ -31,6 +31,6 @@ if [ -e "/var/Containerfile" ] && ! cmp -s /var/Containerfile /var/.Containerfil
   exit 2
 fi
 
-/var/rpm-ostree-to-bootc.py $*
+/var/rpm-ostree-to-bootc-generator.py $*
 exec /var/bootc-build-switch
 

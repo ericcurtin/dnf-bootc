@@ -4,6 +4,8 @@ The goal is to make an image-based OS, feel like a package-based OS.
 
 `/var/dnf-bootc` commands are applied live and persist after reboot.
 
+`/var/rpm-ostree-to-bootc` is another tool provided that can assist with rpm-ostree to bootc migrations
+
 ## Installation
 
 ```bash
@@ -18,6 +20,12 @@ Because we are not packaged properly yet, we have to call as `/var/dnf-bootc`.
 
 ```bash
 sudo /var/dnf-bootc install <package_name>
+```
+
+`/var/rpm-ostree-to-bootc` usage:
+
+```bash
+sudo /var/rpm-ostree-to-bootc quay.io/namespace/some-container-image:version
 ```
 
 ## Features
