@@ -1,5 +1,9 @@
 #!/bin/bash
 
+err() {
+  echo "Error: $1" >&2
+}
+
 bootc-switch() {
   local podman_image_id="$(podman images -q os)"
   exec bootc switch --transport containers-storage "$podman_image_id"
