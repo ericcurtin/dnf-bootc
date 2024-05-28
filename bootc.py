@@ -22,8 +22,10 @@ class BootcPlugin(Plugin):
         actions = self.generate_actions()
         if actions:
             from_line = self.get_os_from_bootc_status()
-            new_containerfile_contents = self.update_containerfile(from_line, actions)
-            self.write_containerfile(new_containerfile_contents)
+            new_containerfile_contents = self.update_containerfile(from_line, actions, "Containerfile")
+            self.write_containerfile(new_containerfile_contents, "Containerfile", 'w')
+            new_containerfile_contents = self.update_containerfile_unsquashed(from_line, actions, "Containerfile-unsquashed")
+            self.write_containerfile(new_containerfile_contents, "Containerfile-unsquashed", 'a')
 
     def generate_actions(self):
         actions = []
@@ -42,15 +44,24 @@ class BootcPlugin(Plugin):
         image = data['spec']['image']['image']
         return f"FROM {image}\n"
 
-    def update_containerfile(self, from_line, actions):
-        containerfile = '/var/Containerfile'
+    def update_containerfile(self, from_line, actions, containerfile):
         new_containerfile_contents = from_line
         for action in actions:
             new_containerfile_contents += f"{action}\n"
 
         return new_containerfile_contents
 
-    def write_containerfile(self, new_containerfile_contents):
-        with open('/var/Containerfile', 'w') as f:
+    def update_containerfile_unsquashed(self, from_line, actions, containerfile):
+        new_containerfile_contents = ""
+        if not exists("/var/" + containerfile):
+            new_containerfile_contents = from_line
+
+        for action in actions:
+            new_containerfile_contents += f"{action}\n"
+
+        return new_containerfile_contents
+
+    def write_containerfile(self, new_containerfile_contents, fname, mode):
+        with open("/var/" + fname, mode) as f:
             f.write(new_containerfile_contents)
 
