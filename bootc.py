@@ -29,7 +29,7 @@ class BootcPlugin(Plugin):
         actions = []
         if self.pkgs_install:
             actions.append("COPY cache/dnf /var/cache/dnf")
-            actions.append(f"RUN dnf install -y {' '.join(self.pkgs_install)}")
+            actions.append(f"RUN dnf install -y {' '.join(self.pkgs_install)} && dnf clean all")
 
         if self.pkgs_remove:
             actions.append(f"RUN dnf remove -y {' '.join(self.pkgs_remove)}")
@@ -44,24 +44,7 @@ class BootcPlugin(Plugin):
 
     def update_containerfile(self, from_line, actions):
         containerfile = '/var/Containerfile'
-        new_containerfile_contents = ''
-        if exists(containerfile):
-            with open(containerfile, 'r') as f:
-                lines = f.readlines()
-
-            replaced = False
-            for line in lines:
-                if line.startswith("FROM "):
-                    new_containerfile_contents += from_line
-                    replaced = True
-                else:
-                    new_containerfile_contents += line
-
-            if not replaced:
-                new_containerfile_contents = from_line + new_containerfile_contents
-        else:
-            new_containerfile_contents = from_line
-
+        new_containerfile_contents = from_line
         for action in actions:
             new_containerfile_contents += f"{action}\n"
 

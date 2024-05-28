@@ -9,14 +9,23 @@ bootc-switch() {
   exec bootc switch --transport containers-storage "$podman_image_id"
 }
 
-set -eu -o pipefail
+main() {
+  set -eu -o pipefail
 
-if [ "$EUID" -ne 0 ]; then
-  err "This command has to be run with superuser privileges (under the root user on most systems)."
-  exit 1
-fi
+  if [ "$EUID" -ne 0 ]; then
+    err "This command has to be run with superuser privileges (under the root user on most systems)."
+    exit 1
+  fi
 
-cp "/var/Containerfile" "/var/.Containerfile"
-podman build -t os /var
-bootc-switch
+  cp "/var/Containerfile" "/var/.Containerfile"
+  local old_podman_image_id="$(podman images -q os)"
+  podman build --squash -t os /var
+  if [ -n "$old_podman_image_id" ]; then
+    podman rmi -f "$old_podman_image_id"
+  fi
+
+  bootc-switch
+}
+
+main
 
