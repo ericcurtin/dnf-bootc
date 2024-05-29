@@ -11,12 +11,12 @@ class BootcPlugin(Plugin):
         super(BootcPlugin, self).__init__(base, cli)
         self.base = base
         self.cli = cli
-        self.pkgs_install = []
         self.pkgs_remove = []
+        self.pkgs_install = []
 
     def resolved(self):
-        self.pkgs_install = [pkg.name for pkg in self.base.transaction.install_set]
         self.pkgs_remove = [pkg.name for pkg in self.base.transaction.remove_set]
+        self.pkgs_install = [pkg.name for pkg in self.base.transaction.install_set]
 
     def transaction(self):
         from_line = self.get_os_from_bootc_status()
@@ -32,15 +32,15 @@ class BootcPlugin(Plugin):
 
     def generate_actions(self, unsquashed=False):
         actions = []
+        if self.pkgs_remove:
+            actions.append(f"RUN dnf remove -y {' '.join(self.pkgs_remove)}")
+
         if self.pkgs_install:
             if not unsquashed:
                 actions.append("COPY cache/dnf /var/cache/dnf")
 
             actions.append(f"RUN dnf install -y {' '.join(self.pkgs_install)}" +
                            (" && dnf clean all" if not unsquashed else ""))
-
-        if self.pkgs_remove:
-            actions.append(f"RUN dnf remove -y {' '.join(self.pkgs_remove)}")
 
         return actions
 
