@@ -19,19 +19,25 @@ class BootcPlugin(Plugin):
         self.pkgs_remove = [pkg.name for pkg in self.base.transaction.remove_set]
 
     def transaction(self):
+        from_line = self.get_os_from_bootc_status()
         actions = self.generate_actions()
         if actions:
-            from_line = self.get_os_from_bootc_status()
-            new_containerfile_contents = self.update_containerfile(from_line, actions, "Containerfile")
-            self.write_containerfile(new_containerfile_contents, "Containerfile", 'w')
-            new_containerfile_contents = self.update_containerfile_unsquashed(from_line, actions, "Containerfile-unsquashed")
-            self.write_containerfile(new_containerfile_contents, "Containerfile-unsquashed", 'a')
+            new_contfile = self.update_containerfile(from_line, actions, "Containerfile")
+            self.write_containerfile(new_contfile, "Containerfile", 'w')
 
-    def generate_actions(self):
+        actions = self.generate_actions(unsquashed=True)
+        if actions:
+            new_contfile_unsq = self.update_containerfile(from_line, actions, "Containerfile-unsquashed", unsquashed=True)
+            self.write_containerfile(new_contfile_unsq, "Containerfile-unsquashed", 'a')
+
+    def generate_actions(self, unsquashed=False):
         actions = []
         if self.pkgs_install:
-            actions.append("COPY cache/dnf /var/cache/dnf")
-            actions.append(f"RUN dnf install -y {' '.join(self.pkgs_install)} && dnf clean all")
+            if not unsquashed:
+                actions.append("COPY cache/dnf /var/cache/dnf")
+
+            actions.append(f"RUN dnf install -y {' '.join(self.pkgs_install)}" +
+                           (" && dnf clean all" if not unsquashed else ""))
 
         if self.pkgs_remove:
             actions.append(f"RUN dnf remove -y {' '.join(self.pkgs_remove)}")
@@ -44,24 +50,14 @@ class BootcPlugin(Plugin):
         image = data['spec']['image']['image']
         return f"FROM {image}\n"
 
-    def update_containerfile(self, from_line, actions, containerfile):
-        new_containerfile_contents = from_line
+    def update_containerfile(self, from_line, actions, containerfile, unsquashed=False):
+        new_contfile = from_line if not unsquashed or not exists("/var/" + containerfile) else ""
         for action in actions:
-            new_containerfile_contents += f"{action}\n"
+            new_contfile += f"{action}\n"
 
-        return new_containerfile_contents
+        return new_contfile
 
-    def update_containerfile_unsquashed(self, from_line, actions, containerfile):
-        new_containerfile_contents = ""
-        if not exists("/var/" + containerfile):
-            new_containerfile_contents = from_line
-
-        for action in actions:
-            new_containerfile_contents += f"{action}\n"
-
-        return new_containerfile_contents
-
-    def write_containerfile(self, new_containerfile_contents, fname, mode):
+    def write_containerfile(self, new_contfile, fname, mode):
         with open("/var/" + fname, mode) as f:
-            f.write(new_containerfile_contents)
+            f.write(new_contfile)
 
