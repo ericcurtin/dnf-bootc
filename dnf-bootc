@@ -33,5 +33,6 @@ fi
 
 run-bootc-usr-overlay
 dnf --setopt=keepcache=true --setopt=pluginpath=/var/dnf-plugins/ "$@"
+echo "dnf $@" >> /var/dnf-bootc.log
 exec /var/bootc-build-switch
 
